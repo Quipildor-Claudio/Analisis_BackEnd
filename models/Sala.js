@@ -21,6 +21,11 @@ const SalaSchema = new Schema({
         enum: ['cirugía', 'emergencia', 'cuidados intensivos', 'general'],
         default: 'general'
     }, // Tipo de sala, por ejemplo: "Cirugía", "Emergencia", "Cuidados Intensivos", etc.
+    camas: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Cama' // Referencia al modelo Cama
+    }] // Array de referencias a camas asociadas a esta sala
+
     },
     {
         timestamps: true // Agrega campos de fecha de creación y actualización
