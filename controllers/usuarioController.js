@@ -6,12 +6,12 @@ var userController = {
 
     // Registrar un usuario
     registerUser: async (req, res) => {
-        const { username, password, email, name, isActive, role, service } = req.body;
+        const { nombreUsuario, contraseña, email, nombre, isActive, rol } = req.body;
         try {
             const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(password, salt);
+            const hashedPassword = await bcrypt.hash(contraseña, salt);
 
-            const newUser = new User({ username, password: hashedPassword, email, name, isActive, role, service });
+            const newUser = new User({ nombreUsuario, contraseña: hashedPassword, email, nombre, isActive, rol });
 
             console.log(newUser);
             await newUser.save();
@@ -22,16 +22,16 @@ var userController = {
         }
     },
     loginUser: async (req, res) => {
-        const { username, password } = req.body;
+        const { nombreUsuario, contraseña } = req.body;
         try {
-            const user = await User.findOne({ username }).populate('service');
+            const user = await User.findOne({ nombreUsuario });
             console.log(user);
 
             if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
 
-            const isMatch = await bcrypt.compare(password, user.password);
+            const isMatch = await bcrypt.compare(contraseña, user.contraseña);
             if (!isMatch) return res.status(400).json({ error: 'Contraseña incorrecta' });
-            const token = jwt.sign({ id: user._id,name:user.name,service:user.service.name }, process.env.JWT_SECRET, { expiresIn: '10h' });
+            const token = jwt.sign({ id: user._id, nombre: user.nombre, rol: user.rol }, process.env.JWT_SECRET, { expiresIn: '10h' });
             res.json({ token });
         } catch (error) {
             res.status(500).json({ error: 'Error al iniciar sesión' });
@@ -41,8 +41,6 @@ var userController = {
         try {
             const items = await User
                 .find()
-                .populate('service')
-                .populate('role');
             res.json(items);
         } catch (err) {
             res.status(500).json({ message: err.message });
@@ -51,8 +49,6 @@ var userController = {
     getOne: async (req, res) => {
         try {
             const item = await User.findById(req.params.id)
-                .populate('service')
-                .populate('role');
             if (item == null) {
                 return res.status(404).json({ message: 'Item no encontrado' });
             }

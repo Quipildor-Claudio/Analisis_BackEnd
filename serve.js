@@ -48,7 +48,6 @@ app.use(bodyParser.json());
 
 // Rutas
 app.use('/api/auth', authRoutes);
-
 app.use('/api', pacienteRoutes);
 app.use('/api', medicoRoutes);
 app.use('/api', camaRoutes);

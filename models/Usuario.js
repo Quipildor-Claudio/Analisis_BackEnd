@@ -17,8 +17,6 @@ const usuarioSchema = new mongoose.Schema({
         enum: ["Administrador", "Medico", "Residente"], // Define roles as per your application needs
         default: "Medico", // Default role can be set to 'user' or any other role you prefer
     },
-
-
 },
 { timestamps: true }
 );
