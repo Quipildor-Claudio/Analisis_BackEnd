@@ -7,10 +7,10 @@ const router = express.Router();
 router.get('/pacientes/', pacienteController.getAll);
 
 // Ruta para obtener un paciente por ID
-router.get('/pacinte/:id', pacienteController.getOne);
+router.get('/paciente/:id', pacienteController.getOne);
 
 // Ruta para obtener un paciente por DNI
-router.get('/pacinte/dni/:dni', pacienteController.getByDni);
+router.get('/paciente/dni/:dni', pacienteController.getByDni);
 
 // Ruta para crear un nuevo paciente
 router.post('/paciente/', pacienteController.save);
