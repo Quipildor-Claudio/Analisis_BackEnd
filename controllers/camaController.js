@@ -5,7 +5,7 @@ var camaController = {
     // Get all camas
     getCamas: async (req, res) => {
         try {
-            const camas = await Cama.find();
+            const camas = await Cama.find().populate('paciente').populate('medico');
             res.status(200).json(camas);
         } catch (error) {
             res.status(500).json({ message: 'Error fetching camas', error });
@@ -14,7 +14,7 @@ var camaController = {
     // Get a single cama by ID
     getCamaById: async (req, res) => {
         try {
-            const cama = await Cama.findById(req.params.id);
+            const cama = await Cama.findById(req.params.id).populate('paciente').populate('medico');
             if (!cama) {
                 return res.status(404).json({ message: 'Cama not found' });
             }

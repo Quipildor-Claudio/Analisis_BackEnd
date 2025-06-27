@@ -2,7 +2,6 @@ const { Schema, model } = require('mongoose');
 
 const camaSchema = new Schema({
     numero: { type: String, required: true },
-    piso: { type: Number, required: true },
     estado: {
         type: String,
         enum: ['disponible', 'ocupada', 'en espera'],

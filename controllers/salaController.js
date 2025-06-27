@@ -5,7 +5,7 @@ var SalaController = {
     // Get all Salas
     getSalas: async (req, res) => {
         try {
-            const Salas = await Sala.find();
+            const Salas = await Sala.find().populate('camas');
             res.status(200).json(Salas);
         } catch (error) {
             res.status(500).json({ message: 'Error fetching Salas', error });
@@ -14,11 +14,18 @@ var SalaController = {
     // Get a single Sala by ID
     getSalaById: async (req, res) => {
         try {
-            const Sala = await Sala.findById(req.params.id);
-            if (!Sala) {
+            const sala = await Sala.findById(req.params.id)
+                .populate({
+                    path: 'camas',
+                    populate: {
+                        path: 'paciente',
+                        model: 'Paciente' // Asegúrate de que este nombre coincida con el modelo que registraste en mongoose
+                    }
+                });
+            if (!sala) {
                 return res.status(404).json({ message: 'Sala not found' });
             }
-            res.status(200).json(Sala);
+            res.status(200).json(sala);
         } catch (error) {
             res.status(500).json({ message: 'Error fetching Sala', error });
         }

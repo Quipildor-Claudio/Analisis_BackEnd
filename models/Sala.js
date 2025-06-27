@@ -8,14 +8,9 @@ const SalaSchema = new Schema({
     }, // Nombre de la sala, por ejemplo: "Sala de Cirugía", "Sala de Emergencias", etc.
     ubicacion: {
         type: String,
-        required: true,
-        trim: true
+    
     }, // Ubicación de la sala dentro del hospital, por ejemplo: "Piso 1", "Piso 2", etc.
-    capacidad: {
-        type: Number,
-        required: true,
-        min: 1 // La capacidad debe ser al menos 1
-    }, // Capacidad máxima de la sala, es decir, cuántas camas puede tener
+   
     tipo: {
         type: String,
         enum: ['cirugía', 'emergencia', 'cuidados intensivos', 'general'],
