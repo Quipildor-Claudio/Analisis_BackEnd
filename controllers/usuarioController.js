@@ -1,6 +1,7 @@
 const User = require('../models/Usuario');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { update } = require('./medicoController');
 
 var userController = {
 
@@ -25,7 +26,7 @@ var userController = {
         const { nombreUsuario, contraseña } = req.body;
         try {
             const user = await User.findOne({ nombreUsuario });
-            console.log(user);
+            //console.log(user);
 
             if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
 
@@ -67,8 +68,60 @@ var userController = {
         } catch (err) {
             res.status(500).json({ message: err.message });
         }
-    }
+    },
+    update: async (req, res) => {
+        try {
+            const { nombreUsuario, contraseña, email, nombre, isActive, rol } = req.body;
+            let hashedPassword;
 
-}
+            // Si se proporciona una nueva contraseña, hashearla
+            if (contraseña && contraseña.trim() !== '') {
+                const salt = await bcrypt.genSalt(10);
+                hashedPassword = await bcrypt.hash(contraseña, salt);
+            }
+
+            // Crear el objeto de actualización
+            const updatedData = {
+                nombreUsuario,
+                email,
+                nombre,
+                isActive,
+                rol
+            };
+
+            // Solo agregar la contraseña si se proporcionó una nueva
+            if (hashedPassword) {
+                updatedData.contraseña = hashedPassword; // Asegúrate que este campo coincida con tu modelo
+            }
+
+            // Actualizar el usuario con validación de campos
+            const updateOptions = {
+                new: true,
+                runValidators: true // Para que valide los campos según el esquema
+            };
+
+            const updatedItem = await User.findByIdAndUpdate(
+                req.params.id,
+                updatedData,
+                updateOptions
+            );
+
+            if (!updatedItem) {
+                return res.status(404).json({ message: 'Usuario no encontrado' });
+            }
+
+            res.json({
+                message: 'Usuario actualizado correctamente',
+                user: updatedItem
+            });
+        } catch (err) {
+            console.error('Error al actualizar usuario:', err);
+            res.status(500).json({
+                message: 'Error al actualizar el usuario',
+                error: err.message
+            });
+        }
+    }
+};
 
 module.exports = userController;
