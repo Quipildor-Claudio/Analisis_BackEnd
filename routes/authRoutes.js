@@ -8,6 +8,8 @@ router.post('/register', userController.registerUser);
 router.post('/login', userController.loginUser);
 router.get('/user/:id', userController.getOne);
 router.delete('/user/:id', userController.delete);
+router.get('/users', userController.getAll);
+
 
 
 
