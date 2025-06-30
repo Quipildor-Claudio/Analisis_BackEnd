@@ -7,7 +7,7 @@ var pacienteController = {
             const limit = parseInt(req.query.limit) || 10;
             const skip = (page - 1) * limit;
 
-            const items = await Paciente.find().skip(skip).limit(limit).sort({_id:-1});
+            const items = await Paciente.find().skip(skip).limit(limit).sort({ _id: -1 });
             const totalItems = await Paciente.countDocuments();
             const totalPages = Math.ceil(totalItems / limit);
             res.json({
@@ -97,6 +97,36 @@ var pacienteController = {
         const searchTerm =
             req.query.q || 'No search term provided';
         res.send(`Search Term: ${searchTerm}`);
+    },
+    // GET /api/pacientes/buscar?query=texto
+
+    searchPaciente: async (req, res) => {
+        try {
+            const query = req.query.query?.trim();
+
+            if (!query) {
+                return res.status(400).json({ message: 'Parámetro de búsqueda "query" es requerido.' });
+            }
+
+            const regex = new RegExp(`^${query}`, 'i'); // Empieza con "query", insensible a mayúsculas
+
+            const pacientes = await Paciente.find({
+                $or: [
+                    { nombre: regex },
+                    { apellido: regex },
+                    { dni: regex }
+                ]
+            }).limit(20); // Limitar a 100 resultados
+
+            if (pacientes.length === 0) {
+                return res.status(404).json({ message: 'No se encontraron pacientes.' });
+            }
+
+            res.json(pacientes);
+        } catch (err) {
+            console.error('Error al buscar pacientes:', err);
+            res.status(500).json({ message: 'Error interno del servidor.' });
+        }
     }
 }
 

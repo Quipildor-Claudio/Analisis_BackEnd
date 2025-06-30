@@ -12,6 +12,10 @@ const PacienteSchema = new Schema({
   fecha_nac: { type: Date, default: Date.now },
   sexo: { type: String, default: '' },
   hclinica: { type: String, default: '' },
+    isActive: {
+        type: Boolean,
+        default: true, // Set default value to true or false as per your requirement
+    },
   diagnosticos: [{
     tipo: {
       type: String,

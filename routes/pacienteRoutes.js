@@ -21,6 +21,8 @@ router.put('/paciente/:id', pacienteController.update);
 // Ruta para eliminar un paciente por ID
 router.delete('/paciente/:id', pacienteController.delete);
 
+router.get('/searchpaciente', pacienteController.searchPaciente);
 
 
+// Ruta para obtener pacientes por nombre
 module.exports = router;
